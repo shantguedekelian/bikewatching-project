@@ -38,7 +38,15 @@ body {
 svg circle {
     opacity: 0.6;
     stroke: white;
-    pointer-events: auto
+    pointer-events: auto;
+    --color-departures: steelblue;
+    --color-arrivals: darkorange;
+    --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+    );
+    fill: var(--color);
 }
 
 header {
@@ -61,4 +69,49 @@ time, em{
 em{
     font-style: italic;
     color: gray;
+}
+
+
+.legend {
+  display: flex;
+  gap: 1px; /* small gap so swatches do not touch */
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.legend > div {
+  flex: 1;                          /* equal width */
+  padding: 0.35rem 1rem;            /* more horizontal padding */
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  background: var(--color);
+}
+
+/* create the blended color for each swatch */
+.legend > div {
+  /* same color system used in your <circle> elements */
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+}
+
+/* Adjust text alignment individually */
+.legend > div:nth-child(1) { text-align: left; }
+.legend > div:nth-child(2) { text-align: center; }
+.legend > div:nth-child(3) { text-align: right; }
+
+/* Automatic text color for contrast */
+.legend > div {
+  /* oklch lightness extraction hack */
+  /* If color is dark, use white text; otherwise black */
+  --lightness: calc(
+    (lch(from var(--color)) l) / 1%
+  );
+  --text-color: color-mix(in srgb, white calc(var(--lightness) * -1%), black);
 }
